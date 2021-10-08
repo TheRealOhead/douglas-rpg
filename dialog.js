@@ -144,7 +144,6 @@ class DialogList {
 }
 
 /// DEBUG POGGGGGGGG
-alert('Press ENTER to proceed through text');
 graphics.images['placeholderTextBox.png'].addEventListener('load',()=>{
 
 	let d = new DialogList([
