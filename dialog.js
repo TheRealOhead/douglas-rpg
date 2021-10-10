@@ -3,12 +3,13 @@
 //////////
 
 var dialog = {
-	textSpeed: 40, // Higher is slower
+	textSpeed: 15, // Higher is slower
 	startCoords: [208,330],
 	charactersPerLine: 42,
 	pixelsBetweenLines: 22,
 	textActive: false,
 	currentlyTyping: false,
+	textColor:'#000',
 
 	head:{
 		startCoords: [40,320]
@@ -36,7 +37,7 @@ class Dialog {
 		this.contentArray = content.split('');
 	}
 
-	/* TODO
+	/* 
 	* Render out all the letters
 	*/
 	render() {
@@ -70,6 +71,7 @@ class Dialog {
 			ctx.font = "16pt MonospaceParker"; // My own font :D
 
 			// BLACK BOX #1 LMAOOOOOOOOOOOOO
+			ctx.fillStyle = dialog.textColor;
 			ctx.fillText(this.content.substr(index,1),
 				((index * 13)) % (dialog.charactersPerLine * 13) + dialog.startCoords[0],Math.floor(index / dialog.charactersPerLine) * dialog.pixelsBetweenLines + dialog.startCoords[1]);
 			
@@ -144,7 +146,7 @@ class DialogList {
 }
 
 /// DEBUG POGGGGGGGG
-graphics.images['placeholderTextBox.png'].addEventListener('load',()=>{
+/*graphics.images['placeholderTextBox.png'].addEventListener('load',()=>{
 
 	let d = new DialogList([
 	new Dialog('Hello, my name is Mark Bellenoit!','mark','regular'),
@@ -155,4 +157,4 @@ graphics.images['placeholderTextBox.png'].addEventListener('load',()=>{
 
 	d.render();
 
-});
+});*/
