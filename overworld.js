@@ -5,8 +5,19 @@
 */
 
 var overworld = {
-
+	scroll:{
+		x:0,
+		y:0
+	},
+	background:graphics.images['backgrounds/test.png'],
+	zoom:2
 }
+
+    ////////////////////////
+   ////////////////////////
+  ///////  CLASSES ///////
+ ////////////////////////
+////////////////////////
 
 
 class Thing {
@@ -15,12 +26,12 @@ class Thing {
 			x: x,
 			y: y
 		};
-		this.collision = {
-			width:  64,
-			height: 64
+		this.collisionBox = {
+			width:  32,
+			height: 32
 		};
-		if (width) {
-			this.collision = {
+		if (width || height) {
+			this.collisionBox = {
 				width:  width,
 				height: height
 			};
@@ -64,12 +75,6 @@ class Thing {
 	}
 }
 
-    ////////////////////////
-   ////////////////////////
-  ///////  CLASSES ///////
- ////////////////////////
-////////////////////////
-
   ////////////////
  // This is to be used for everything that isn't a part of the background, I'll make a separate system for that at some point :)))
 ////////////////
@@ -83,7 +88,7 @@ class Object extends Thing {
 	render() {
 		// TODO: Account for scrolling
 		let image = graphics.images[this.image];
-		ctx.drawImage(image,this.position.x,this.position.y,image.width * 4,image.height * 4);
+		ctx.drawImage(image,this.position.x - overworld.scroll.x,this.position.y - overworld.scroll.y,image.width * overworld.zoom,image.height * overworld.zoom);
 	}
 }
 
@@ -137,7 +142,7 @@ class Person extends Object {
 class Mark extends Person {
 	constructor(x, y) {
 		super(x,y);
-		this.speed = 5;
+		this.speed = 2;
 	}
 
 	update(callback) {
@@ -173,15 +178,47 @@ class Mark extends Person {
 				this.walking = false;
 			};
 
+			// Fun fact for all you nerds who actually are seeing this:
+			// I got the idea for this type of collision checking from the way Super Mario 64 does it,
+			// just with one less dimension!
+
+
+			let checkCollision = (dimension) => {
+				let prePosition = JSON.parse(JSON.stringify(this.position));
+
+				this.position[dimension] += desiredVector[dimension] * this.speed;
+
+				let goBack = false;
+				overworld.things.forEach((o)=>{
+					if (o.collision && collision(this,o)) {
+						goBack = true;
+					};
+				});
+				if (goBack) 
+					this.position = JSON.parse(JSON.stringify(prePosition));
+			};
+
+			// Check x collision
+			checkCollision('x');
+
 			// Check y collision
-			let prePosition = JSON.parse(JSON.stringify(this.position));
-
-			this.position.x += desiredVector.x * this.speed;
-			this.position.y += desiredVector.y * this.speed;
+			checkCollision('y');
 
 
 
+			// Set scroll to Mark himself
+			overworld.scroll.x = this.position.x - c.width  / 2 + this.collisionBox.width  / 2;
+			overworld.scroll.y = this.position.y - c.height / 2 + this.collisionBox.height / 2;
 
+			// If scroll is beyond background boundary, stop it!
+			if (overworld.scroll.x < 0)
+				overworld.scroll.x = 0;
+			if (overworld.scroll.y < 0)
+				overworld.scroll.y = 0;
+			if (overworld.scroll.x > overworld.background.width * 2 - c.width)
+				overworld.scroll.x = overworld.background.width * 2 - c.width;
+			if (overworld.scroll.y > overworld.background.height * 2 - c.height)
+				overworld.scroll.y = overworld.background.height * 2 - c.height;
 
 
 			if (callback)
@@ -193,15 +230,9 @@ class Mark extends Person {
 
 
 
-
-
-
-
-
-
 overworld.things = [
-	new Object(0,0,0,0,false,'testDude.png'),
-	new Mark(200,200)
+	new Object(300,500,128,128,true,'testDude.png'),
+	new Mark(350,350)
 ];
 
 
@@ -225,10 +256,8 @@ setInterval(()=>{
 		 // RENDERING //
 		///////////////
 
-		// Clear the screen
-		// TODO: Change to drawBackground
-		ctx.fillStyle = '#fff';
-		ctx.fillRect(0,0,c.width,c.height);
+		// Draw background
+		ctx.drawImage(overworld.background,-overworld.scroll.x,-overworld.scroll.y,overworld.background.width * overworld.zoom,overworld.background.height * overworld.zoom);
 
 
 		// Render all the things

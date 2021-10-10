@@ -4,6 +4,7 @@ ctx.imageSmoothingEnabled = false;
 
 let images = [
 	'testDude.png',
+	'testWall.png',
 
 	'placeholderTextBox.png',
 	
@@ -26,6 +27,9 @@ let images = [
 	'overworld/mark/south/walk1.png',
 	'overworld/mark/south/walk2.png',
 	'overworld/mark/south/walk3.png',
+
+	'backgrounds/test.png',
+	'backgrounds/test2.png'
 
 ];
 

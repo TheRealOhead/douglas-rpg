@@ -1,4 +1,7 @@
+html {
+	padding: auto;
+}
+
 canvas {
-	margin: auto;
 	border: 1px solid black;
 }

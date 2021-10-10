@@ -42,9 +42,9 @@ document.addEventListener('keyup',(e)=>{
 
 
 // DEBUG :DDD
-let x = document.createElement('x');
+/*let x = document.createElement('x');
 document.body.appendChild(x)
 
 setInterval(()=>{
 	x.innerHTML = input.keys;
-},10);
+},10);*/
