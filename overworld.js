@@ -79,14 +79,15 @@ class Thing {
  // This is to be used for everything that isn't a part of the background, I'll make a separate system for that at some point :)))
 ////////////////
 class Object extends Thing {
-	constructor(x, y, width, height, collision, image) {
+	constructor(x, y, width, height, collision, interact, image) {
 		super(x,y,width,height);
 		this.image = image;
 		this.collision = collision;
+		if (interact)
+			this.interact = interact;
 	}
 
 	render() {
-		// TODO: Account for scrolling
 		let image = graphics.images[this.image];
 		ctx.drawImage(image,this.position.x - overworld.scroll.x,this.position.y - overworld.scroll.y,image.width * overworld.zoom,image.height * overworld.zoom);
 	}
@@ -96,8 +97,8 @@ class Object extends Thing {
  // Used for party members, NPCs, and Mark
 ////////////////
 class Person extends Object {
-	constructor(x, y, width, height, name, facing, animationDelay) {
-		super(x,y,width,height,false);
+	constructor(x, y, width, height, name, interact, facing, animationDelay) {
+		super(x,y,width,height,false,interact);
 		
 		!name   		   ? this.name           = 'mark'  : this.name           = name;
 		!facing 		   ? this.facing         = 'south' : this.facing         = facing;
@@ -143,6 +144,8 @@ class Mark extends Person {
 	constructor(x, y) {
 		super(x,y);
 		this.speed = 2;
+
+		this.pressedSpaceLastFrame = false;
 	}
 
 	update(callback) {
@@ -182,7 +185,6 @@ class Mark extends Person {
 			// I got the idea for this type of collision checking from the way Super Mario 64 does it,
 			// just with one less dimension!
 
-
 			let checkCollision = (dimension) => {
 				let prePosition = JSON.parse(JSON.stringify(this.position));
 
@@ -221,6 +223,42 @@ class Mark extends Person {
 				overworld.scroll.y = overworld.background.height * 2 - c.height;
 
 
+			// Handle interaction
+			if (!this.pressedSpaceLastFrame && input.isKeyDown(' ')) {
+				let interact = ()=>{};
+
+				// Get the point to check for things from Mark
+				let interactPoint = {x:this.position.x + this.collisionBox.width / 2,y:this.position.y + this.collisionBox.height / 2}; // Center
+				switch (this.facing) {
+					case 'north':
+						interactPoint.y -= this.collisionBox.height;
+						break;
+					case 'south':
+						interactPoint.y += this.collisionBox.height;
+						break;
+					case 'east':
+						interactPoint.x += this.collisionBox.width;
+						break;
+					case 'west':
+						interactPoint.x -= this.collisionBox.width;
+						break;
+				};
+
+				overworld.things.forEach((thing)=>{
+					// Check for point collision
+					if (thing.interact &&
+						interactPoint.x > thing.position.x &&
+						interactPoint.y > thing.position.y &&
+						interactPoint.x < thing.position.x + thing.collisionBox.width &&
+						interactPoint.y < thing.position.y + thing.collisionBox.height) {
+						interact = thing.interact;
+					};
+				});
+
+				interact();
+			};
+			this.pressedSpaceLastFrame = input.isKeyDown(' ');
+
 			if (callback)
 				callback();
 		});
@@ -231,8 +269,17 @@ class Mark extends Person {
 
 
 overworld.things = [
-	new Object(300,500,128,128,true,'testDude.png'),
-	new Mark(350,350)
+	new Mark(350,350),
+	new Object(300,500,128,128,true,()=>{
+		let d = new DialogList([
+			new Dialog('Welcome to the test room!','testDude','happy'),
+			new Dialog('What the hell is that?!','mark','angry'),
+			new Dialog('It\'s a room that a developer, (Owen, in this case), uses to test features in a video game.','testDude','happy'),
+			new Dialog('Why are our words cut off at strange places?','mark','sussy'),
+			new Dialog('Owen is a lazy fucker!','testDude','happy'),
+		]);
+		dialog.say(d);
+	},'testDude.png')
 ];
 
 

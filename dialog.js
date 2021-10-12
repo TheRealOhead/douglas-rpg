@@ -13,6 +13,10 @@ var dialog = {
 
 	head:{
 		startCoords: [40,320]
+	},
+
+	say:(dialogList)=>{
+		dialogList.render();
 	}
 };
 
@@ -104,9 +108,9 @@ class DialogList {
 		// To keep track
 		let index = 0;
 
-		// Function to be used for the "Enter" event
+		// Function to be used for the " " event
 		let eventFunc = (e)=>{
-			if (e.key == 'Enter' && !dialog.currentlyTyping) {
+			if (e.key == ' ' && !dialog.currentlyTyping) {
 				document.removeEventListener('keydown',eventFunc);
 				loop();
 			};
@@ -125,13 +129,13 @@ class DialogList {
 			if (index < this.list.length) {
 				document.addEventListener('keydown',eventFunc);
 
-				// If it's the first text box, send a fake "Enter"
+				// If it's the first text box, send a fake " "
 				if (index == 0)
-					eventFunc({key:'Enter'});
+					eventFunc({key:' '});
 			} else {
 				// Closes the last text box
 				let enderFunc = (e) => {
-					if (e.key == 'Enter') {
+					if (e.key == ' ') {
 						dialog.textActive = false;
 						document.removeEventListener('keydown',enderFunc);
 					};
