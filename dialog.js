@@ -7,6 +7,7 @@ var dialog = {
 	startCoords: [208,330],
 	charactersPerLine: 42,
 	pixelsBetweenLines: 22,
+	audioDelay:4, // Only play text beep every N characters
 	textActive: false,
 	currentlyTyping: false,
 	textColor:'#000',
@@ -74,13 +75,22 @@ class Dialog {
 		if (index < this.contentArray.length) {
 			ctx.font = "16pt MonospaceParker"; // My own font :D
 
+			if (index % dialog.audioDelay == 0) {
+				audio.sounds['textBeep.wav'].pause();
+				audio.sounds['textBeep.wav'].currentTime = 0;
+			};
+
 			// BLACK BOX #1 LMAOOOOOOOOOOOOO
 			ctx.fillStyle = dialog.textColor;
 			ctx.fillText(this.content.substr(index,1),
 				((index * 13)) % (dialog.charactersPerLine * 13) + dialog.startCoords[0],Math.floor(index / dialog.charactersPerLine) * dialog.pixelsBetweenLines + dialog.startCoords[1]);
 			
+			if (index % dialog.audioDelay == 0) {
+				audio.sounds['textBeep.wav'].play();
+			};
+			
 			index++;
-			audio.sounds['textBeep.wav'].play();
+
 			setTimeout(()=>{this.renderCallback(index)},dialog.textSpeed);
 		} else {
 			// Turn off currentlyTyping
