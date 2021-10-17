@@ -28,6 +28,28 @@ let images = [
 	'overworld/mark/south/walk2.png',
 	'overworld/mark/south/walk3.png',
 
+
+	'overworld/owen/east/walk0.png',
+	'overworld/owen/east/walk1.png',
+	'overworld/owen/east/walk2.png',
+	'overworld/owen/east/walk3.png',
+
+	'overworld/owen/west/walk0.png',
+	'overworld/owen/west/walk1.png',
+	'overworld/owen/west/walk2.png',
+	'overworld/owen/west/walk3.png',
+
+	'overworld/owen/north/walk0.png',
+	'overworld/owen/north/walk1.png',
+	'overworld/owen/north/walk2.png',
+	'overworld/owen/north/walk3.png',
+
+	'overworld/owen/south/walk0.png',
+	'overworld/owen/south/walk1.png',
+	'overworld/owen/south/walk2.png',
+	'overworld/owen/south/walk3.png',
+
+
 	'backgrounds/test.png',
 	'backgrounds/test2.png'
 

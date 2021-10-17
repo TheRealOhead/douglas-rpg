@@ -10,8 +10,29 @@ var overworld = {
 		y:0
 	},
 	background:graphics.images['backgrounds/test.png'],
-	zoom:2
+	zoom:2,
+	partyTrail:{
+		limit:300,
+		trail:[],
+		members:[]
+	}
 }
+
+// Fill the trail
+for (let i = 0; i < overworld.partyTrail.trail.length; i++) {
+	overworld.partyTrail.trail.push(new PartyPosition(undefined,undefined,'south'))
+};
+
+function getMark() {
+	let mark = null;
+	overworld.things.forEach((t)=>{
+		if (t.name == 'mark') {
+			mark = t;
+		};
+	});
+	return mark;
+}
+
 
     ////////////////////////
    ////////////////////////
@@ -97,8 +118,8 @@ class Object extends Thing {
  // Used for party members, NPCs, and Mark
 ////////////////
 class Person extends Object {
-	constructor(x, y, width, height, name, interact, facing, animationDelay) {
-		super(x,y,width,height,false,interact);
+	constructor(x, y, width, height, collision, name, interact, facing, animationDelay) {
+		super(x,y,width,height,collision,interact);
 		
 		!name   		   ? this.name           = 'mark'  : this.name           = name;
 		!facing 		   ? this.facing         = 'south' : this.facing         = facing;
@@ -142,7 +163,7 @@ class Person extends Object {
 /////////////////
 class Mark extends Person {
 	constructor(x, y) {
-		super(x,y);
+		super(x,y,undefined,undefined,false);
 		this.speed = 2;
 
 		this.pressedSpaceLastFrame = false;
@@ -259,9 +280,31 @@ class Mark extends Person {
 			};
 			this.pressedSpaceLastFrame = input.isKeyDown(' ');
 
+
+			// Party stuff
+			if (this.walking) {// Only while walking!
+				overworld.partyTrail.trail.unshift(new PartyPosition(JSON.parse(JSON.stringify(this.position)), this.facing));
+				if (overworld.partyTrail.trail.length > overworld.partyTrail.limit) {
+					overworld.partyTrail.trail.pop();
+				};
+			};
+
 			if (callback)
 				callback();
 		});
+	}
+}
+
+class PartyPosition {
+	constructor(position,facing) {
+		this.position = position;
+		this.facing = facing;
+	}
+}
+
+class PartyMember extends Person {
+	constructor(name) {
+		super(undefined, undefined, undefined, undefined, false, name, (()=>{}));
 	}
 }
 
@@ -282,6 +325,17 @@ overworld.things = [
 	},'testDude.png')
 ];
 
+overworld.partyTrail.members = [
+	{
+		partyMember: new PartyMember('owen'),
+		distance:35
+	},
+	{
+		partyMember: new PartyMember('owen'),
+		distance:70
+	}
+]
+
 
 
 
@@ -297,7 +351,7 @@ overworld.things = [
 // Main loop, used for both rendering and logic
 // Will not be executed during dialog
 setInterval(()=>{
-	if (!dialog.textActive) {
+	if (!dialog.textActive && !menu.active) {
 
 		  ///////////////
 		 // RENDERING //
@@ -310,6 +364,17 @@ setInterval(()=>{
 		// Render all the things
 		overworld.things.forEach((t)=>{
 			t.render();
+
+		});
+		// Also render party members!
+		overworld.partyTrail.members.forEach((member)=>{
+			// Set their location to where they're supposed to be
+			if (overworld.partyTrail.trail.length > member.distance) {
+				member.partyMember.position = overworld.partyTrail.trail[member.distance].position;
+				member.partyMember.facing = overworld.partyTrail.trail[member.distance].facing;
+			};
+			member.partyMember.walking = getMark().walking;
+			member.partyMember.render();
 		});
 
 

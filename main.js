@@ -1,4 +1,3 @@
-alert('You can press space to interact with objects/people btw :)')
   ///////////////////////
  // CANVAS DELARATION //
 ///////////////////////
