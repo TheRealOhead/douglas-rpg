@@ -7,6 +7,8 @@ let images = [
 	'testWall.png',
 
 	'placeholderTextBox.png',
+
+	'overworld/cia_agent.png',
 	
 	'overworld/mark/east/walk0.png',
 	'overworld/mark/east/walk1.png',

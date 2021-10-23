@@ -59,6 +59,14 @@ class Thing {
 		};
 	}
 
+	// Remove self from list of things
+	remove() {
+		overworld.things.forEach((thing,i)=>{
+			if (this == thing) {
+				overworld.things.splice(i);
+			};
+		});
+	}
 
 	// Move the thing smoothly, ignoring collision entirely
 	move(dx,dy,time,callback) {
@@ -314,18 +322,48 @@ class PartyMember extends Person {
 overworld.things = [
 	new Mark(350,350),
 	new Object(300,500,128,128,true,()=>{
+		new Menu({x:20,y:20},[
+			new MenuItem('Talk',()=>{
+				let d = new DialogList([
+					new Dialog('Welcome to the test room!','testDude','happy'),
+					new Dialog('What the hell is that?!','mark','angry'),
+					new Dialog('It\'s a room that a developer, (Owen, in this case), uses to test features in a video game.','testDude','happy'),
+					new Dialog('Why are our words cut off at strange places?','mark','sussy'),
+					new Dialog('Owen is a lazy fucker!','testDude','happy'),
+				]);
+				dialog.say(d);
+			}),
+			new MenuItem('Punch',()=>{
+				let d = new DialogList([
+					new Dialog('Hey! That smarts!','testDude','sad')
+				]);
+				dialog.say(d);
+			})
+		]).open();
+	},'testDude.png'),
+	new Object(600,500,32 * 2,48 * 2,true,()=>{
 		let d = new DialogList([
-			new Dialog('Welcome to the test room!','testDude','happy'),
-			new Dialog('What the hell is that?!','mark','angry'),
-			new Dialog('It\'s a room that a developer, (Owen, in this case), uses to test features in a video game.','testDude','happy'),
-			new Dialog('Why are our words cut off at strange places?','mark','sussy'),
-			new Dialog('Owen is a lazy fucker!','testDude','happy'),
+			new Dialog('Sorry kid, can\'t let you though. Federally classified.','ciaAgent','stern')
 		]);
 		dialog.say(d);
-	},'testDude.png')
+	},'overworld/cia_agent.png'),
+	new Person(20,20,undefined,undefined,true,'owen',()=>{
+		new Menu({x:20,y:20},[
+			new MenuItem('Recruit',()=>{
+				let d = new DialogList([
+					new Dialog('You want me to join your cause? Sure, why not?','owen','happy')
+				],()=>{overworld.partyTrail.members.push({
+					partyMember: new PartyMember('owen'),
+					distance:35
+				});
+			});
+				dialog.say(d);
+			})
+		]).open();
+	})
 ];
 
-overworld.partyTrail.members = [
+/*overworld.partyTrail.members = [
 	{
 		partyMember: new PartyMember('owen'),
 		distance:35
@@ -334,7 +372,7 @@ overworld.partyTrail.members = [
 		partyMember: new PartyMember('owen'),
 		distance:70
 	}
-]
+]*/
 
 
 

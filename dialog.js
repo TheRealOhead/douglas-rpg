@@ -105,8 +105,13 @@ class Dialog {
 * @param {Dialog[]} list The sequence of Dialogs to show
 */
 class DialogList {
-	constructor(list) {
+	constructor(list,callback) {
 		this.list = list;
+		if (!callback) {
+			this.callback = ()=>{};
+		} else {
+			this.callback = callback;
+		};
 	}
 
 	/*
@@ -148,6 +153,7 @@ class DialogList {
 					if (e.key == ' ') {
 						dialog.textActive = false;
 						document.removeEventListener('keydown',enderFunc);
+						this.callback()
 					};
 				};
 				document.addEventListener('keydown',enderFunc);

@@ -1,4 +1,4 @@
-let soundList = ['textBeep.wav'];
+let soundList = ['textBeep.wav','menuMove.wav'];
 
 var audio = {
 	sounds:{
