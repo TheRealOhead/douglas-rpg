@@ -91,7 +91,8 @@ class Dialog {
 			
 			index++;
 
-			setTimeout(()=>{this.renderCallback(index)},dialog.textSpeed);
+			if (dialog.textActive) // Make sure the text box is still active
+				setTimeout(()=>{this.renderCallback(index)},dialog.textSpeed);
 		} else {
 			// Turn off currentlyTyping
 			dialog.currentlyTyping = false;
