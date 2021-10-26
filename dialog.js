@@ -3,7 +3,7 @@
 //////////
 
 var dialog = {
-	textSpeed: 15, // Higher is slower
+	textSpeed: 10, // Higher is slower
 	startCoords: [208,330],
 	charactersPerLine: 42,
 	pixelsBetweenLines: 22,
