@@ -6,6 +6,33 @@ var menu = {
 	fontSize:16
 };
 
+class Item {
+	constructor(type) {
+		this.type = type;
+	}
+};
+
+class Weapon extends Item {
+	constructor(type, damage) {
+		super(type);
+		this.damage = damage;
+	}
+};
+
+class MeleeWeapon extends Weapon {
+	constructor(damage) {
+		super('meleeWeapon', damage);
+	}
+}
+
+var items = {
+	'gavel':new MeleeWeapon(4)
+};
+
+var inventory = [
+	'gavel'
+];
+
 class Menu {
 	constructor(position, arrayOfItems) {
 		this.position = position;

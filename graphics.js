@@ -52,8 +52,22 @@ let images = [
 	'overworld/owen/south/walk3.png',
 
 
+
+	'battle/owen/idle.png',
+
+
+	'battle/mark/idle.png',
+
+
+	'battle/ciaAgent/idle.png',
+
+
+
 	'backgrounds/test.png',
-	'backgrounds/test2.png'
+	'backgrounds/test2.png',
+
+
+	'battle/backgrounds/road.png'
 
 ];
 

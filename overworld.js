@@ -389,7 +389,7 @@ overworld.things = [
 // Main loop, used for both rendering and logic
 // Will not be executed during dialog
 setInterval(()=>{
-	if (!dialog.textActive && !menu.active) {
+	if (!dialog.textActive && !menu.active && !battle.active) {
 
 		  ///////////////
 		 // RENDERING //
