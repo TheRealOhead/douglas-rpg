@@ -8,7 +8,7 @@ class Spell {
 }
 
 class Character {
-	constructor(name,fileName,proficiency,goodGuy,spells,damage,speed) {
+	constructor(name,fileName,proficiency,goodGuy,spells,damage,speed,maxHP) {
 		this.name 		 = name;
 		this.fileName    = fileName;
 		this.proficiency = proficiency;
@@ -16,19 +16,23 @@ class Character {
 		this.spells      = spells;
 		this.damage      = damage;
 		this.speed       = speed;
+		this.maxHP       = maxHP;
+		this.hp          = maxHP;
+
+		this.buffs  	 = [];
 	}
 };
 
 class GoodGuy extends Character {
-	constructor(name,fileName,proficiency,spells,speed) {
-		super(name,fileName,proficiency,true,spells,1,speed);
+	constructor(name,fileName,proficiency,spells,speed,maxHP) {
+		super(name,fileName,proficiency,true,spells,1,speed,maxHP);
 
 		this.activeWeapon = '';
 	}
 };
 
 class BadGuy extends Character {
-	constructor(name,fileName,proficiency,spells,damage,speed) {
+	constructor(name,fileName,proficiency,spells,damage,speed,maxHP) {
 		super(name,fileName,proficiency,false,spells,damage,speed);
 	}
 };
@@ -36,7 +40,7 @@ class BadGuy extends Character {
 var battle = {
 	active:false,
 	characters:{
-		'mark': new GoodGuy('Mark','mark','melee',[],6),
+		'mark': new GoodGuy('Mark','mark','melee',[],6,80),
 		'owen': new GoodGuy('Owen','owen','',[
 			new Spell('Computer Virus','Infect all enemies with the "Computer Virus" debuff, decreasing attack power for a few turns',(enemy,damage)=>{
 				activeCharacters.forEach((individual)=>{
@@ -46,9 +50,9 @@ var battle = {
 				});
 			},0),
 			new Spell('Debug','Cure a friend of most ailments. Effective 75% of the time',()=>{},0)
-		],8),
+		],8,60),
 
-		'ciaAgent': new BadGuy('CIA Agent','ciaAgent','melee',[],8,4)
+		'ciaAgent': new BadGuy('CIA Agent','ciaAgent','melee',[],8,4,100)
 	}
 };
 
@@ -66,9 +70,36 @@ class Battle {
  		this.currentMember = this.memberList[this.currentMemberIndex];
  	}
 
- 	takeTurn(actionString) {
+ 	takeTurn(action) {
+ 		this.updateCurrentMember();
+ 		
+ 		switch (action.type) {
+ 			case 'useItem':
 
- 		this.currentMemberIndex = (this.currentMemberIndex + 1) % this.members.length;
+ 				let item = items[inventory[action.itemId]];
+ 				console.log(item);
+
+ 				
+ 				if (item.hpRestore || item.hpRestore == 0) { // Eat food
+
+ 					// Increase target's HP
+ 					this.currentMember.hp += item.hpRestore;
+ 					if (this.currentMember.hp > this.currentMember.maxHP) {
+ 						this.currentMember.hp = this.currentMember.maxHP;
+ 					};
+
+ 					// Remove the food
+ 					inventory.splice(action.itemId,1);
+
+ 				} else { // Can't use item
+ 					
+ 				};
+
+
+ 				break;
+ 		};
+
+ 		this.currentMemberIndex = (this.currentMemberIndex + 1) % this.memberList.length;
  	}
 
  	initiate() {

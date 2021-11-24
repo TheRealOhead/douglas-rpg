@@ -12,6 +12,12 @@ class Item {
 	}
 };
 
+class Food {
+	constructor(hpRestore) {
+		this.hpRestore = hpRestore;
+	}
+}
+
 class Weapon extends Item {
 	constructor(type, damage) {
 		super(type);
@@ -26,11 +32,13 @@ class MeleeWeapon extends Weapon {
 }
 
 var items = {
-	'gavel':new MeleeWeapon(4)
+	'gavel':new MeleeWeapon(4),
+	'big mac':new Food(10)
 };
 
 var inventory = [
-	'gavel'
+	'gavel',
+	'big mac'
 ];
 
 class Menu {
